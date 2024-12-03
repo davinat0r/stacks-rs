@@ -2,6 +2,7 @@ use sha2::Digest;
 
 pub type U32 = aes::cipher::consts::U32;
 pub type U64 = aes::cipher::consts::U64;
+pub type U20 = aes::cipher::consts::U20;
 
 /// Computes the hash of the provided input_data.
 ///
