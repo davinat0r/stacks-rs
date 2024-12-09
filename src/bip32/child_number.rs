@@ -4,8 +4,8 @@ const INDEX_THRESHOLD: u32 = 2147483648;
 
 #[derive(Clone, Copy, Debug)]
 pub struct ChildNumber {
-    index: u32,
-    is_hardened: bool
+    pub index: u32,
+    pub is_hardened: bool
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -49,13 +49,19 @@ impl FromStr for ChildNumber {
                 let index = s.replace("'", "").parse::<u32>().map_err(|_err| {
                     ChildNumberError::CannotParseindex
                 })?;
-                ChildNumber::new(index + INDEX_THRESHOLD)
+                match Self::is_hardened(index + INDEX_THRESHOLD)? {
+                    false => Err(ChildNumberError::InvalidIndex),
+                    true => ChildNumber::new(index + INDEX_THRESHOLD),
+                }
             },
             false => {
                 let index = s.parse::<u32>().map_err(|_err| {
                     ChildNumberError::CannotParseindex
                 })?;
-                ChildNumber::new(index)
+                match Self::is_hardened(index)? {
+                    true => Err(ChildNumberError::InvalidIndex),
+                    false => ChildNumber::new(index),
+                }
             },
         }
     }
